@@ -1,5 +1,4 @@
 package peaksoft.model;
 
-public class Pharmacy {
-
+public class Worker {
 }
