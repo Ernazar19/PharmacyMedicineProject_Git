@@ -1,6 +1,7 @@
 package peaksoft.service.impl;
 
 import peaksoft.db.Database;
+import peaksoft.exceptions.NotFoundExcep;
 import peaksoft.model.Medicine;
 import peaksoft.model.Pharmacy;
 import peaksoft.model.Worker;
@@ -21,6 +22,23 @@ public class ServiceImpl implements Service {
 
     @Override
     public String addMedicinesToPharmacy(Long pharmacyId, Medicine medicine) {
+        boolean isTrue = true;
+        try {
+            for (int i = 0; i < database.getPharmacies().size(); i++) {
+                if (database.getPharmacies().get(i).getId().equals(pharmacyId)){
+                    isTrue = true;
+                    database.getPharmacies().get(i).getMedicines().add(medicine);
+                    return String.format("Medicine with name: %s " +
+                            "successfully added to Pharmacy with id: %s",medicine.getMedicineName(),pharmacyId);
+                }else {
+                    isTrue = false;
+                }
+            }if (!isTrue){
+                throw new NotFoundExcep(String.format("Pharmacy with id: %s is not found",pharmacyId));
+            }
+        }catch (NotFoundExcep n){
+            System.out.println(n.getMessage());
+        }
         return null;
     }
 
@@ -31,6 +49,7 @@ public class ServiceImpl implements Service {
 
     @Override
     public String updateMedicinePrice(Long pharmacyId, Long medicineId, int price) {
+
         return null;
     }
 
