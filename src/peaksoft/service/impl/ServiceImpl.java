@@ -77,6 +77,33 @@ public class ServiceImpl implements Service {
 
     @Override
     public String updateMedicinePrice(Long pharmacyId, Long medicineId, int price) {
+        boolean isTrue = true;
+        try {
+            for (int i = 0; i < database.getPharmacies().size(); i++) {
+                if (database.getPharmacies().get(i).getId().equals(pharmacyId)){
+                    isTrue = true;
+                    for (int j = 0; j < i; j++) {
+                        if (database.getPharmacies().get(i).getMedicines().get(j).getId().equals(medicineId)){
+                            isTrue = true;
+                            database.getPharmacies().get(i).getMedicines().get(j).setPrice(price);
+                            return String.format("Medicine with id: %s price successfully updated",medicineId);
+                        }else {
+                            isTrue = false;
+                        }
+
+                    }if (!isTrue){
+                        throw new NotFoundExcep(String.format("Medicine with id: %s is not found",medicineId));
+                    }
+                }else {
+                    isTrue = false;
+                }
+
+            }if (!isTrue){
+                throw new NotFoundExcep(String.format("Pharmacy  with id: %s is not found",pharmacyId));
+            }
+        }catch (NotFoundExcep e){
+            System.out.println(e.getMessage());
+        }
 
         return null;
     }
