@@ -55,6 +55,28 @@ public class ServiceImpl implements Service {
 
     @Override
     public String deleteMedicineByName(Long pharmacyId, String medicineName) {
+        boolean isTrue = true;
+        try {
+            for (int i = 0; i < database.getPharmacies().size(); i++) {
+                if (database.getPharmacies().get(i).getId().equals(pharmacyId)){
+                    isTrue = true;
+                    for (int j = 0; j < i; j++) {
+                        if (database.getPharmacies().get(i).getMedicines().get(j).getMedicineName().equalsIgnoreCase(medicineName)){
+                            database.getPharmacies().get(i).getMedicines()
+                                    .remove(database.getPharmacies().get(i).getMedicines().get(j));
+                            return String.format("Medicine with name: %s successfully deleted",medicineName);
+                        }
+                    }
+                }else {
+                    isTrue = false;
+                }
+
+            }if (isTrue){
+                throw new NotFoundExcep(String.format("Pharmacy with id: %s is not found",pharmacyId));
+            }
+        }catch (NotFoundExcep e){
+            System.out.println(e.getMessage());
+        }
         return null;
     }
 
