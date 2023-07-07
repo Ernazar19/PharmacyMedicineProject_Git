@@ -1,5 +1,6 @@
 package peaksoft.service.impl;
 
+import peaksoft.db.Database;
 import peaksoft.model.Medicine;
 import peaksoft.model.Pharmacy;
 import peaksoft.model.Worker;
@@ -8,6 +9,11 @@ import peaksoft.service.Service;
 import java.util.List;
 
 public class ServiceImpl implements Service {
+    private Database database;
+
+    public ServiceImpl(Database database) {
+        this.database = database;
+    }
     @Override
     public List<Medicine> getAllMedicinesByPharmacy(String pharmacyName) {
         return null;
