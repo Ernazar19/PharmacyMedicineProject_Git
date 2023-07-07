@@ -7,6 +7,7 @@ import peaksoft.model.Pharmacy;
 import peaksoft.model.Worker;
 import peaksoft.service.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class ServiceImpl implements Service {
@@ -44,6 +45,33 @@ public class ServiceImpl implements Service {
 
     @Override
     public String addWorkerToPharmacy(Long pharmacyId, Worker worker) {
+        boolean isTrue = true;
+        try {
+            for (int i = 0; i < database.getPharmacies().size(); i++) {
+                if (database.getPharmacies().get(i).getId().equals(pharmacyId)){
+                    isTrue = false;
+                    for (Worker a:database.getPharmacies().get(i).getWorkers()) {
+                        if (a.getEmail().equalsIgnoreCase(worker.getEmail())) {
+                            isTrue = true;
+                            throw new NotFoundExcep(String.format("Worker with email:%s already exists", worker.getEmail()));
+                        }else {
+                            a.setEmail(worker.getEmail());
+                        }
+                        int now = LocalDate.now().getYear();
+                        int dateOfBirth = a.getDateOfBirth().getYear();
+                        int age = now - dateOfBirth;
+                        if (age < 18) {
+                            a.setDateOfBirth(worker.getDateOfBirth());
+                        }else {
+                            throw new NotFoundExcep("The age employee is reported to be more than 18!");
+                        }
+                        database.getPharmacies().get(i).getWorkers().add(a);
+                        }
+                    }
+                }
+        }catch (NotFoundExcep e){
+            System.out.println(e.getMessage());
+        }
         return null;
     }
 
@@ -70,7 +98,6 @@ public class ServiceImpl implements Service {
                 }else {
                     isTrue = false;
                 }
-
             }if (isTrue){
                 throw new NotFoundExcep(String.format("Pharmacy with id: %s is not found",pharmacyId));
             }
